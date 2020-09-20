@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+﻿#!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 #   http://yingyan.baidu.com/api/v3/track/addpoint
 #   ak                      9OOSFllyelB4Ph9vcyIThPVajcHzyHLf
@@ -6,9 +6,9 @@
 #   entity_name             big_raspi
 #   latitude                纬度
 #   longitude               经度
-#   loc_time                时间
+#   loc_time                时间  utc时间0时区
 #   coord_type_input        wgs84
-#   speed                   速度
+#   speed                   速度  米每秒
 #   direction               方向
 #   height                  海拔
 #   radius                  精度
@@ -95,7 +95,7 @@ def upload():
     'longitude':p_longitude,
     'radius':p_radius,
     'service_id':query_service_id,
-    'speed':p_speed
+    'speed':p_speed*3600/1000
     }
 
     body='ak='+query_ak
@@ -114,8 +114,10 @@ def upload():
 
 running = True
 sleep_time=1
+
 def bedtime(old_data,new_data):
     global sleep_time
+    
     if sleep_time<1:
         sleep_time=1
     time=sleep_time+0.1
@@ -126,27 +128,26 @@ def bedtime(old_data,new_data):
         return time+1
     
     speed=new_data['speed']
-
     if speed=='n/a':
         return time*2
-    elif speed>100:
+    elif speed>27:
         return 1
-    elif speed>60:
+    elif speed>16:
         time*=0.9
-    elif speed<5:
+    elif speed<1.3:
         return time+60
-    elif speed<20:
+    elif speed<5:
         time+=10
-    elif speed<40:
+    elif speed<11:
         time+=1
     elif speed<time:
-        time/=10
+        time-=1
 
     direction=old_data['direction']-new_data['direction']
     speed-=old_data['speed']
     if abs(direction)<3 or abs(speed)<1:
         time*=2-speed/100
-    elif abs(direction)<5 or abs(speed)<10:
+    elif abs(direction)<5 or abs(speed)<2:
         time*=1.1
     else:
         time=1
