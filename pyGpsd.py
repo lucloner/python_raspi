@@ -23,13 +23,14 @@ import hashlib
 import http.client
 import json
 import time
+#import sys
 
 from gps3 import agps3
 
 # 以get请求为例http://api.map.baidu.com/geocoder/v2/?address=百度大厦&output=json&ak=yourak
 queryUrl='yingyan.baidu.com'
 query_ak='9OOSFllyelB4Ph9vcyIThPVajcHzyHLf'
-queryStr = '/api/v3/track/addpoint?ak='+query_ak
+queryStr = '/api/v3/track/addpoint'
 query_sk='tp2OtcwKmOMs51z6F8uFtUBKGuDKsoDG'
 query_service_id='223512'
 query_entity_name='big_raspi'
@@ -58,6 +59,9 @@ def calc_sn(url):
     print(rawStr+'-->'+sn)
     return sn
 
+sleep_time=1
+last_time=0
+
 datalist={}
 def upload():
     global queryUrl
@@ -76,6 +80,8 @@ def upload():
     global p_time
 
     global datalist
+    global sleep_time
+    global last_time
 
     utc=time.strptime(p_time, "%Y-%m-%dT%H:%M:%S.%fZ")
     #换算中国时区
@@ -101,6 +107,16 @@ def upload():
     body='ak='+query_ak
     for k,v in datalist.items():
         body+=('&{0}={1}'.format(k,v))
+
+    print('skip:{0}+{1}->{2}'.format(last_time,sleep_time,p_utc))
+    if 'n/a' in body:
+        print('data n/a!')
+        sleep_time=0
+        return datalist
+    elif last_time>p_utc:
+        sleep_time-=1
+        return datalist
+
     test_queryStr=queryStr+'?'+body
     sn=calc_sn(test_queryStr)
     body+='&sn='+sn
@@ -110,10 +126,10 @@ def upload():
     req = conn.request('POST', queryStr, body, header)
     print(conn.getresponse().read().decode())
     print('===')
+    last_time=int(p_utc)+int(sleep_time)
     return datalist
 
 running = True
-sleep_time=1
 
 def bedtime(old_data,new_data):
     global sleep_time
@@ -154,6 +170,8 @@ def bedtime(old_data,new_data):
 
     if time<1:
         time=1
+    elif time>90:
+        time=90
     elif time>60:
         time=60+time/10
 
@@ -181,6 +199,14 @@ def getPositionData(gps):
     p_radius = getattr(nx,'epv', p_radius)
     p_speed = getattr(nx,'speed', p_speed)
     p_time = getattr(nx,"time",p_time)
+
+    if p_height=='n/a':
+        p_height=0
+    if p_radius=='n/a':
+        p_radius=0
+    if p_speed=='n/a':
+        p_speed=0
+
     print("Your position: lon = " + str(p_longitude) + ", lat = " + str(p_latitude)+'[d:'+str(p_direction)+' h:'+str(p_height)+' s:'+str(p_speed)+' r:'+str(p_radius)+' t:'+p_time)
 
 gps_socket = agps3.GPSDSocket()
@@ -194,9 +220,9 @@ try:
             if new_data:
                 getPositionData(new_data)
                 break
-            print('.')
-        print('==='+sleep_time)
-        time.sleep(sleep_time)
+            #print('.')
+        print('==='+str(sleep_time))
+        time.sleep(1)
         if p_time=='n/a':
             continue
         try:
