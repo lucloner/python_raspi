@@ -90,6 +90,7 @@ def upload():
 
     if int(last_time)>int(p_utc):
         last_time=0
+        sleep_time=0
         print('skip:{0}+{1}->{2}'.format(last_time,sleep_time,p_utc))
         return {}
 
@@ -106,7 +107,7 @@ def upload():
     'longitude':p_longitude,
     'radius':p_radius,
     'service_id':query_service_id,
-    'speed':p_speed*3600/1000
+    'speed':3600*p_speed/1000
     }
 
     body='ak='+query_ak
@@ -116,6 +117,7 @@ def upload():
     if 'n/a' in body:
         print('data n/a!')
         last_time=0
+        sleep_time=0
         return {}
     
     test_queryStr=queryStr+'?'+body
