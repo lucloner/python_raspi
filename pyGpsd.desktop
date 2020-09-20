@@ -2,9 +2,7 @@
 Encoding=UTF-8
 Name=Biggee's GPS Tracker
 Comment=Camera
-Exec=/home/pi/src/pyGpsd.py
-Terminal=true
+Exec=/bin/sh /home/pi/src/pyGpsd.sh
 Type=Application
 Categories=Application;
 Comment=GPS
-X-KeepTerminal=true

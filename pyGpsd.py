@@ -119,7 +119,7 @@ def upload():
         last_time=0
         sleep_time=0
         return {}
-    
+
     test_queryStr=queryStr+'?'+body
     sn=calc_sn(test_queryStr)
     body+='&sn='+sn
@@ -129,14 +129,14 @@ def upload():
     req = conn.request('POST', queryStr, body, header)
     print(conn.getresponse().read().decode())
     print('===')
-    last_time=int(p_utc)+int(sleep_time)-2
+    last_time=int(p_utc)+int(sleep_time)+0.0001
     return datalist
 
 running = True
 
 def bedtime(old_data,new_data):
     global sleep_time
-    
+
     if sleep_time<1:
         sleep_time=1
     time=sleep_time+0.1
@@ -145,7 +145,7 @@ def bedtime(old_data,new_data):
         return time+2
     elif 'speed' not in old_data:
         return time+1
-    
+
     speed=new_data['speed']
     if speed=='n/a':
         return time*2
@@ -179,7 +179,7 @@ def bedtime(old_data,new_data):
         time=60+time/10
 
     return time
-    
+
 
 def getPositionData(gps):
     global p_direction
@@ -210,7 +210,7 @@ def getPositionData(gps):
     if p_speed=='n/a':
         p_speed=0
 
-    print("Your position: lon = " + str(p_longitude) + ", lat = " + str(p_latitude)+'[d:'+str(p_direction)+' h:'+str(p_height)+' s:'+str(p_speed)+' r:'+str(p_radius)+' t:'+p_time)
+    print("Your position: lon = " + str(p_longitude) + ", lat = " + str(p_latitude)+' d:'+str(p_direction)+' h:'+str(p_height)+' s:'+str(p_speed)+' r:'+str(p_radius)+' t:'+p_time)
 
 gps_socket = agps3.GPSDSocket()
 gps_socket.connect()
@@ -218,21 +218,19 @@ gps_socket.watch()
 try:
     print("Application started!")
     while running:
-        #getPositionData(gpsd)
         for new_data in gps_socket:
             if new_data:
                 getPositionData(new_data)
                 break
-            #print('.')
-        print('==='+str(sleep_time))
-        time.sleep(1)
-        if p_time=='n/a':
-            continue
         try:
+            if p_time=='n/a':
+                continue
+            print('==='+str(sleep_time))
+            time.sleep(1)
             old=datalist
             new=upload()
             sleep_time=bedtime(old,new)
-        except(Exception):
+        except (Exception):
             print('upload error!')
 
 except (KeyboardInterrupt):
