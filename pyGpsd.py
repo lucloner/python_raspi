@@ -89,10 +89,9 @@ def upload():
     p_utc+=28800
 
     if int(last_time)>int(p_utc):
-        last_time=0
-        sleep_time=0
+        sleep_time=1+sleep_time/2
         print('skip:{0}+{1}->{2}'.format(last_time,sleep_time,p_utc))
-        return {}
+        return datalist
 
     header = {"Content-type":"application/x-www-form-urlencoded","Accept":"text/plain"}
 
@@ -117,8 +116,7 @@ def upload():
     if 'n/a' in body:
         print('data n/a!')
         last_time=0
-        sleep_time=0
-        return {}
+        return datalist
 
     test_queryStr=queryStr+'?'+body
     sn=calc_sn(test_queryStr)

@@ -5,4 +5,4 @@ do
 	echo waiting
 	sleep 10
 done
-/usr/bin/vlc -f -L http://ivi.bupt.edu.cn/hls/dftv.m3u8 
+/usr/bin/vlc -f -L http://ivi.bupt.edu.cn/hls/dftv.m3u8
