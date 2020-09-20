@@ -88,6 +88,11 @@ def upload():
     p_utc = int(time.mktime(utc))
     p_utc+=28800
 
+    if int(last_time)>int(p_utc):
+        last_time=0
+        print('skip:{0}+{1}->{2}'.format(last_time,sleep_time,p_utc))
+        return {}
+
     header = {"Content-type":"application/x-www-form-urlencoded","Accept":"text/plain"}
 
     datalist = {
@@ -108,15 +113,11 @@ def upload():
     for k,v in datalist.items():
         body+=('&{0}={1}'.format(k,v))
 
-    print('skip:{0}+{1}->{2}'.format(last_time,sleep_time,p_utc))
     if 'n/a' in body:
         print('data n/a!')
-        sleep_time=0
-        return datalist
-    elif last_time>p_utc:
-        sleep_time-=1
-        return datalist
-
+        last_time=0
+        return {}
+    
     test_queryStr=queryStr+'?'+body
     sn=calc_sn(test_queryStr)
     body+='&sn='+sn
@@ -126,7 +127,7 @@ def upload():
     req = conn.request('POST', queryStr, body, header)
     print(conn.getresponse().read().decode())
     print('===')
-    last_time=int(p_utc)+int(sleep_time)
+    last_time=int(p_utc)+int(sleep_time)-2
     return datalist
 
 running = True
@@ -139,7 +140,7 @@ def bedtime(old_data,new_data):
     time=sleep_time+0.1
 
     if 'speed' not in new_data:
-        return 60
+        return time+2
     elif 'speed' not in old_data:
         return time+1
     
@@ -171,7 +172,7 @@ def bedtime(old_data,new_data):
     if time<1:
         time=1
     elif time>90:
-        time=90
+        time=90+time/1000
     elif time>60:
         time=60+time/10
 
