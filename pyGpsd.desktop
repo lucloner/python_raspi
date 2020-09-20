@@ -1,0 +1,10 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Biggee's GPS Tracker
+Comment=Camera
+Exec=/home/pi/src/pyGpsd.py
+Terminal=true
+Type=Application
+Categories=Application;
+Comment=GPS
+X-KeepTerminal=true

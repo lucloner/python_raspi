@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Biggee's Pi Camera
+Comment=Camera
+Exec=/usr/bin/sudo /usr/bin/python3 /home/pi/src/pyBigPiCam.py
+Terminal=false
+Type=Application
+Categories=Application;
