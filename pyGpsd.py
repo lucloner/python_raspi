@@ -134,6 +134,7 @@ running = True
 
 def bedtime(old_data,new_data):
     global sleep_time
+    global last_time
 
     if sleep_time<1:
         sleep_time=1
@@ -162,6 +163,8 @@ def bedtime(old_data,new_data):
 
     direction=old_data['direction']-new_data['direction']
     speed-=old_data['speed']
+    if abs(direction)>40:
+        last_time=0
     if abs(direction)<3 or abs(speed)<1:
         time*=2-speed/100
     elif abs(direction)<5 or abs(speed)<2:
