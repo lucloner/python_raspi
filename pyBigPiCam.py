@@ -18,16 +18,23 @@ storage_limit=40
 video_path='/media/pi/U/Video/'
 
 camera=PiCamera(sensor_mode=4)
-#camera.resolution=(1920, 1080)
+camera.resolution=(1296,972)
+camera.framerate=41
+#camera.framerate_range=(1,42)
+#camera.framerate_delta=(1,42)
 camera_preview=0
 def chang_preview():
 	global camera_preview
 	global status
 
-	if camera_preview==1:
+	if camera_preview==2:
 		camera_preview=0
 		camera.stop_preview()
 		status.set('stop preview')
+	elif camera_preview==1:
+		camera_preview=2
+		camera.stop_preview()
+		camera.start_preview(fullscreen=True)
 	else:
 		camera_preview=1
 		camera.start_preview(fullscreen=False,window=(0,0,240,480))
@@ -90,7 +97,9 @@ def cam_loop():
 			continue
 		print("Info: Record Video to: "+video_file)
 		status.set('recording '+video_file)
-		camera.start_recording(video_file)
+		#camera.resoultion=(2592,1944)
+		camera.framerate=41
+		camera.start_recording(output=video_file,format='h264',quality=1,level='4.2')
 		video_path=path
 		checksize()
 		camera.wait_recording(60)
