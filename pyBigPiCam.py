@@ -17,9 +17,9 @@ status.set('init')
 storage_limit=40
 video_path='/media/pi/U/Video/'
 
-camera=PiCamera(sensor_mode=4)
-camera.resolution=(1296,972)
-camera.framerate=41
+camera=PiCamera(stereo_mode='side-by-side',framerate=42,resolution=(1296,972),sensor_mode=4)
+#camera.resolution=(1296,972)
+#camera.framerate=41
 #camera.framerate_range=(1,42)
 #camera.framerate_delta=(1,42)
 camera_preview=0
@@ -97,8 +97,6 @@ def cam_loop():
 			continue
 		print("Info: Record Video to: "+video_file)
 		status.set('recording '+video_file)
-		#camera.resoultion=(2592,1944)
-		camera.framerate=41
 		camera.start_recording(output=video_file,format='h264',quality=1,level='4.2')
 		video_path=path
 		checksize()
