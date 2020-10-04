@@ -17,7 +17,7 @@ status.set('init')
 storage_limit=40
 video_path='/media/pi/U/Video/'
 
-camera=PiCamera(stereo_mode='side-by-side',framerate=42,resolution=(1296,972),sensor_mode=4)
+camera=PiCamera(framerate=42,resolution=(1296,972),sensor_mode=4)
 #camera.resolution=(1296,972)
 #camera.framerate=41
 #camera.framerate_range=(1,42)
