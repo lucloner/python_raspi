@@ -72,7 +72,7 @@ def checksize():
 				print("Error: delete "+file_to_delete)
 				start=start+1
 				if start>=dir_len:
-					break	
+					break
 
 recording=0
 def cam_loop():
@@ -97,7 +97,7 @@ def cam_loop():
 			continue
 		print("Info: Record Video to: "+video_file)
 		status.set('recording '+video_file)
-		camera.start_recording(output=video_file,format='h264',quality=1,level='4.2')
+		camera.start_recording(output=video_file,format='h264',quality=10,level='4.2')
 		video_path=path
 		checksize()
 		camera.wait_recording(60)
@@ -110,7 +110,7 @@ except Exception as e:
 	print('str(Exception):\t', str(Exception))
 	print('str(e):\t\t', str(e))
 	print('repr(e):\t', repr(e))
-	print('traceback.print_exc():')   
+	print('traceback.print_exc():')
 	traceback.print_exc()
 	print('traceback.format_exc():\n%s' % traceback.format_exc())
 
