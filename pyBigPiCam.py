@@ -14,7 +14,7 @@ window.title('Big PiCam')
 status=tkinter.StringVar(window)
 status.set('init')
 
-storage_limit=40
+storage_limit=28
 video_path='/media/pi/U/Video/'
 
 camera=PiCamera(framerate=42,resolution=(1296,972),sensor_mode=4)
