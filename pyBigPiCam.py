@@ -15,7 +15,8 @@ status=tkinter.StringVar(window)
 status.set('init')
 
 storage_limit=28
-video_path='/media/pi/U/Video/'
+video_base='/media/pi/U'
+video_path=video_base+'/Video/'
 
 camera=PiCamera(framerate=42,resolution=(1296,972),sensor_mode=4)
 #camera.resolution=(1296,972)
@@ -77,6 +78,7 @@ def checksize():
 recording=0
 def cam_loop():
 	global recording
+	global video_base
 	global video_path
 	global storage_limit
 	global status
@@ -87,11 +89,12 @@ def cam_loop():
 		if os.path.exists(path)==False:
 			status.set('waiting for mount '+str(recording))
 			if recording<10:
-				path=video_path+str(recording)
+				path=video_base+str(recording)+'/Video/'
 			else:
 				recording=0
 				path=video_path
 			continue
+		video_path=path
 		video_file=video_path+'/'+str(recording)+'.h264'
 		if os.path.isfile(video_file):
 			continue
